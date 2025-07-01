@@ -4,9 +4,10 @@
  * SPDX-License-Identifier: CC0-1.0
  */
 
-#include <../inc/chip_info.h>
+#include <camera.h>
 
-extern "C" void app_main(void)
-{
-    get_esp_info();
+extern "C" void app_main() {
+    Camera cam;
+    cam.init_camera();
+    cam.capture_frame();
 }
