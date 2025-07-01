@@ -1,0 +1,27 @@
+# Сборка
+build/
+*.bin
+*.elf
+*.map
+
+# Системные файлы
+*.pyc
+*.pyo
+__pycache__/
+
+# IDE и VSCode
+.vscode/
+.idea/
+
+# Локальная конфигурация
+sdkconfig
+sdkconfig.old
+sdkconfig.ci
+managed_components/
+dependencies.lock
+
+# ESP-IDF-specific
+.project
+.cproject
+*.launch
+*.pydevproject
