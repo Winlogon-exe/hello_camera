@@ -1,4 +1,5 @@
 #include <camera.h>
+static const char *TAG = "camera";
 
 Camera::Camera()
 {
@@ -16,7 +17,11 @@ esp_err_t Camera::init_camera()
         ESP_LOGE(TAG, "Camera init failed with error 0x%x", err);
         return err;
     }
+    
     ESP_LOGI(TAG, "Camera initialized");
+    xTaskCreatePinnedToCore(start_record_video, "start_record_video", 4096, NULL, 5, NULL, 1);
+
+    ESP_LOGI(TAG, "Camera start_video");
     return ESP_OK;
 }
 
@@ -24,42 +29,45 @@ void Camera::init_camera_config()
 {
     config.ledc_channel = LEDC_CHANNEL_0;
     config.ledc_timer = LEDC_TIMER_0;
-    config.pin_d0 = GPIO_NUM_5;
-    config.pin_d1 = GPIO_NUM_18;
-    config.pin_d2 = GPIO_NUM_19;
-    config.pin_d3 = GPIO_NUM_21;
-    config.pin_d4 = GPIO_NUM_36;
-    config.pin_d5 = GPIO_NUM_39;
-    config.pin_d6 = GPIO_NUM_34;
-    config.pin_d7 = GPIO_NUM_35;
-    config.pin_xclk = GPIO_NUM_0;
-    config.pin_pclk = GPIO_NUM_22;
-    config.pin_vsync = GPIO_NUM_25;
-    config.pin_href = GPIO_NUM_23;
-    config.pin_sccb_sda = GPIO_NUM_26;
-    config.pin_sccb_scl = GPIO_NUM_27;
-    config.pin_pwdn = GPIO_NUM_32;
-    config.pin_reset = -1;
-    config.xclk_freq_hz = 20000000;
-    config.pixel_format = PIXFORMAT_JPEG;
-    config.grab_mode = CAMERA_GRAB_WHEN_EMPTY;
 
-    // Можно выбрать: FRAMESIZE_QVGA, SVGA, UXGA...
-    config.frame_size = FRAMESIZE_QVGA;
-    config.jpeg_quality = 12; // от 0 (макс качество) до 63 (мин)
-    config.fb_count = 1;
+    config.pin_d0 = 5;
+    config.pin_d1 = 18;
+    config.pin_d2 = 19;
+    config.pin_d3 = 21;
+    config.pin_d4 = 36;
+    config.pin_d5 = 39;
+    config.pin_d6 = 34;
+    config.pin_d7 = 35;
+
+    config.pin_xclk = 0;
+    config.pin_pclk = 22;
+    config.pin_vsync = 25;
+    config.pin_href = 23;
+    config.pin_sccb_sda = 26;
+    config.pin_sccb_scl = 27;
+    config.pin_pwdn = 32;
+    config.pin_reset = -1;
+
+    config.xclk_freq_hz = 10000000;                  
+    config.pixel_format = PIXFORMAT_GRAYSCALE;      
+    config.frame_size = FRAMESIZE_QVGA;           
+    config.fb_count = 1;                           
+    config.grab_mode = CAMERA_GRAB_WHEN_EMPTY;
 }
 
-void Camera::capture_frame()
+void Camera::start_record_video(void* pvParameters)
 {
-    camera_fb_t* fb = esp_camera_fb_get();
-    if(!fb)
+    while(true)
     {
-        ESP_LOGE(TAG,"Camera capture failed");
-        return;
+        camera_fb_t* fb = esp_camera_fb_get();
+        if(!fb)
+        {
+            ESP_LOGE(TAG,"Camera capture failed");
+            vTaskDelay(pdMS_TO_TICKS(1000));
+            continue;
+        }
+        ESP_LOGI(TAG, "Grayscale frame: %zu bytes (%dx%d)", fb->len, fb->width, fb->height);
+        esp_camera_fb_return(fb);
+        vTaskDelay(pdMS_TO_TICKS(1000));
     }
-
-    ESP_LOGI(TAG,"Captured Frames: %zu bytes",fb -> len);
-    ESP_LOGI(TAG, "Header: 0x%02X 0x%02X", fb->buf[0], fb->buf[1]);
-    esp_camera_fb_return(fb);
 }

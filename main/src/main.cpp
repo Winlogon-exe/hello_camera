@@ -9,5 +9,4 @@
 extern "C" void app_main() {
     Camera cam;
     cam.init_camera();
-    cam.capture_frame();
 }
