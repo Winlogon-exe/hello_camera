@@ -1,12 +1,12 @@
 extern "C"
 {
-#include <esp_camera.h>
-#include "esp_log.h"
-#include "esp_mac.h"
-#include <freertos/mpu_wrappers.h>
-#include <freertos/projdefs.h>
-#include <freertos/FreeRTOS.h>
-#include "soc/rtc_cntl_reg.h"
+    #include <esp_camera.h>
+    #include "esp_log.h"
+    #include "esp_mac.h"
+    #include <freertos/mpu_wrappers.h>
+    #include <freertos/projdefs.h>
+    #include <freertos/FreeRTOS.h>
+    #include "soc/rtc_cntl_reg.h"
 }
 
 class Camera

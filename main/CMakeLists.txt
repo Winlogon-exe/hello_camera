@@ -2,6 +2,7 @@ set(SOURCES
     "src/main.cpp"
     "src/chip_info.cpp"
     "src/camera.cpp"
+    "src/video_sender.cpp"
 )
 
 set(INCLUDES

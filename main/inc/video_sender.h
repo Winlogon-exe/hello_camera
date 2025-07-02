@@ -1,0 +1,8 @@
+
+
+class VideoSender
+{
+    private:
+        
+    public:
+};
