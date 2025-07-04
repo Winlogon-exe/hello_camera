@@ -8,5 +8,7 @@
 
 extern "C" void app_main() {
     Camera cam;
+    cam.init_camera_config();
     cam.init_camera();
+    cam.start_record_video();
 }
